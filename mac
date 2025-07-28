@@ -164,14 +164,15 @@ EOF
 # brew link --force heroku
 
 fancy_echo "Configuring asdf version manager ..."
-asdf_prefix="$(brew --prefix asdf)"
 if [ ! -d "$HOME/.asdf" ]; then
   brew install asdf
-  append_to_zshrc "source $asdf_prefix/libexec/asdf.sh" 1
 else
   brew upgrade asdf
-  asdf_prefix="$(brew --prefix asdf)"
 fi
+
+# Get asdf prefix after installation/upgrade
+asdf_prefix="$(brew --prefix asdf)"
+append_to_zshrc "source $asdf_prefix/libexec/asdf.sh" 1
 
 alias install_asdf_plugin=add_or_update_asdf_plugin
 add_or_update_asdf_plugin() {
