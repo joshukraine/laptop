@@ -130,8 +130,8 @@ brew "openssl"
 # brew "rcm"
 # brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
-# brew "tmux"
-# brew "vim"
+brew "tmux"
+brew "neovim"
 # brew "watchman"
 brew "zsh"
 
@@ -165,9 +165,10 @@ EOF
 
 fancy_echo "Configuring asdf version manager ..."
 if [ ! -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
-  # shellcheck disable=SC2016
-  append_to_zshrc 'source "$HOME/.asdf/asdf.sh"'
+  brew install asdf
+  append_to_zshrc "source $(brew --prefix asdf)/libexec/asdf.sh" 1
+else
+  brew upgrade asdf
 fi
 
 alias install_asdf_plugin=add_or_update_asdf_plugin
@@ -183,7 +184,7 @@ add_or_update_asdf_plugin() {
 }
 
 # shellcheck disable=SC1091
-. "${HOME}/.asdf/asdf.sh"
+. "$(brew --prefix asdf)/libexec/asdf.sh"
 add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
 add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
