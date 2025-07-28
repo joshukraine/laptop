@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a shell script project that automates macOS development environment setup. It's a personal fork of thoughtbot's laptop setup script with specific customizations for the maintainer's workflow.
 
-**Target Platform**: macOS (Sonoma 14.x, Ventura 13.x, Monterey 12.x)
+**Target Platform**: macOS (Sequoia 15.x, Sonoma 14.x, Ventura 13.x, Monterey 12.x)
 **Architecture Support**: Both Apple Silicon (arm64) and Intel (x86_64)
 
 ## Development Commands
@@ -55,10 +55,12 @@ The 216-line main script follows this pattern:
 
 ### Fork-Specific Customizations
 
-- asdf installed via git (not Homebrew)
-- Heroku tools removed
-- Reduced Homebrew taps and formulae
-- PostgreSQL version pinned to 14
+- **asdf via Homebrew**: Uses Homebrew installation method for better maintainability
+- **Minimal package selection**: thoughtbot/heroku tools and taps commented out
+- **Modern editor**: Uses Neovim instead of Vim
+- **Tmux included**: Enabled for terminal multiplexing workflow
+- **Streamlined toolset**: RCM, Watchman, reattach-to-user-namespace, GPG Suite commented out
+- **PostgreSQL version pinned to 14**: Specific version for compatibility
 
 ## Repository Structure
 
@@ -73,6 +75,14 @@ This is a **fork** with upstream relationship:
 - `README.md` - Comprehensive usage documentation
 - `CHANGELOG` - Required for all changes per PR template
 - `.github/PULL_REQUEST_TEMPLATE.md` - Enforces CHANGELOG and README updates
+- `CLAUDE.md` - Development guidance for Claude Code
+- `SECURITY.md` - Security policy documentation
+
+### CI/CD Setup
+
+- **No CI workflows**: Thoughtbot-specific automated workflows removed
+- **Manual quality checks**: Use `shellcheck mac` for validation
+- **UTM testing**: Test changes on fresh macOS installations
 
 ## Shell Scripting Conventions
 
@@ -96,4 +106,3 @@ The script detects Intel vs Apple Silicon and adjusts:
 - Follow thoughtbot's open source code of conduct
 - PR template requires CHANGELOG and README updates
 - Test on clean macOS installations before merging
-
