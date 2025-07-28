@@ -23,9 +23,9 @@ Bug reports for older versions are welcome.
 Changes to this fork
 --------------------
 
-- Install asdf via git instead of Homebrew
 - Comment out Heroku-related code
 - Comment out unused Homebrew taps and formulae
+- Use Neovim instead of Vim
 
 Install
 -------
