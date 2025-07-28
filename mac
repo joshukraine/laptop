@@ -121,7 +121,6 @@ fancy_echo "Updating Homebrew formulae ..."
 brew update --force # https://github.com/Homebrew/brew/issues/1151
 brew bundle --file=- <<EOF
 # tap "thoughtbot/formulae"
-tap "homebrew/services"
 # tap "heroku/brew"
 
 # Unix
@@ -131,8 +130,8 @@ brew "openssl"
 # brew "rcm"
 # brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
-# brew "tmux"
-# brew "vim"
+brew "tmux"
+brew "neovim"
 # brew "watchman"
 brew "zsh"
 
@@ -166,36 +165,40 @@ EOF
 
 fancy_echo "Configuring asdf version manager ..."
 if [ ! -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
-  # shellcheck disable=SC2016
-  append_to_zshrc 'source "$HOME/.asdf/asdf.sh"'
+  brew install asdf
+else
+  brew upgrade asdf
 fi
+
+# Get asdf prefix after installation/upgrade
+asdf_prefix="$(brew --prefix asdf)"
+append_to_zshrc "source $asdf_prefix/libexec/asdf.sh" 1
 
 alias install_asdf_plugin=add_or_update_asdf_plugin
 add_or_update_asdf_plugin() {
   local name="$1"
   local url="$2"
 
-  if ! asdf plugin-list | grep -Fq "$name"; then
-    asdf plugin-add "$name" "$url"
+  if ! asdf plugin list | grep -Fq "$name"; then
+    asdf plugin add "$name" "$url"
   else
-    asdf plugin-update "$name"
+    asdf plugin update "$name"
   fi
 }
 
 # shellcheck disable=SC1091
-. "${HOME}/.asdf/asdf.sh"
+. "$asdf_prefix/libexec/asdf.sh"
 add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
 add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
 install_asdf_language() {
   local language="$1"
   local version
-  version="$(asdf list-all "$language" | grep -v "[a-z]" | tail -1)"
+  version="$(asdf list all "$language" | grep -v "[a-z]" | grep -v '^[[:space:]]*$' | tail -1)"
 
   if ! asdf list "$language" | grep -Fq "$version"; then
     asdf install "$language" "$version"
-    asdf global "$language" "$version"
+    asdf set --home "$language" "$version"
   fi
 }
 
