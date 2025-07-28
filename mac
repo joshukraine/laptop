@@ -164,11 +164,13 @@ EOF
 # brew link --force heroku
 
 fancy_echo "Configuring asdf version manager ..."
+asdf_prefix="$(brew --prefix asdf)"
 if [ ! -d "$HOME/.asdf" ]; then
   brew install asdf
-  append_to_zshrc "source $(brew --prefix asdf)/libexec/asdf.sh" 1
+  append_to_zshrc "source $asdf_prefix/libexec/asdf.sh" 1
 else
   brew upgrade asdf
+  asdf_prefix="$(brew --prefix asdf)"
 fi
 
 alias install_asdf_plugin=add_or_update_asdf_plugin
@@ -184,18 +186,18 @@ add_or_update_asdf_plugin() {
 }
 
 # shellcheck disable=SC1091
-. "$(brew --prefix asdf)/libexec/asdf.sh"
+. "$asdf_prefix/libexec/asdf.sh"
 add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
 add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
 install_asdf_language() {
   local language="$1"
   local version
-  version="$(asdf list all "$language" | grep -v "[a-z]" | tr -s '\n' | tail -1)"
+  version="$(asdf list all "$language" | grep -v "[a-z]" | tail -1)"
 
   if ! asdf list "$language" | grep -Fq "$version"; then
     asdf install "$language" "$version"
-    asdf set --home "$language" "$version"
+    asdf global "$language" "$version"
   fi
 }
 
